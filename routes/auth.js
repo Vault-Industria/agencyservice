@@ -6,7 +6,7 @@ const User = require('../model/user');
 const router = express.Router();
 
 router.post("/register", async (req, res) => {
-  const {user_name,email,phone,role,website,password,bio } = req.body;
+  const {user_name,email,phone,role,website,password,bio,agency } = req.body;
   
   if (!(email && password && user_name)) {
     return res.status(400).send("All input is required");
@@ -28,6 +28,7 @@ router.post("/register", async (req, res) => {
     role,
     website,
     bio,
+    agency
   };
   
 
@@ -59,6 +60,18 @@ router.get("/getusers", async (req, res) => {
 
   const {userInfo } = req.body;
   User.find({_id:userInfo }, function (err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+  
+});
+router.post("/getcreators", async (req, res) => {
+
+  const {agencyId } = req.body;
+  User.find({agency:agencyId }, function (err, result) {
     if (err) {
       res.send(err);
     } else {
@@ -131,13 +144,34 @@ router.get("/getusers", async (req, res) => {
 
 ;
 
-router.post("/addwallet", async (req, res) => {
+router.put("/addwallet", async (req, res) => {
   const { user_id,wallets } = req.body;
-  const filter = { _id:user_id };
-  const update = {wallet:wallets}
 
- let doc = await User.findOneAndUpdate(filter,update);
- res.send(doc)
+ 
+  User.updateOne({_id:user_id},{wallet:wallets}, function (err, result) {
+    if (err) {
+        res.send(err);
+    } else {
+        res.send(result);
+    }
+})
+
+});
+
+router.post("/updateuser", async (req, res) => {
+  
+  const { id,user_name,photo,bio } = req.body;
+
+ 
+  User.updateOne({_id:id},{"$set":{user_name:user_name,photo:photo,bio:bio}}, function (err, result) {
+    
+    if (err) {
+        res.send(err);
+    } else {
+        res.send(result);
+    }
+})
+
 });
 
 

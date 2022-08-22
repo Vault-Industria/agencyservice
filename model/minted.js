@@ -12,6 +12,7 @@ const minted = new mongoose.Schema({
   collectionz:{type: String, default: null},
   likes:{type:Array,default:null},
   views:{type:Number,default:0},
+  assetCId:{type:String,default:null},
 
 
 },

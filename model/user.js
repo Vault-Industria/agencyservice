@@ -17,7 +17,10 @@ const userSchema = new mongoose.Schema({
   country:{type:String,default:null},
   postal_code:{type:String,default:null},
   bio:{type:String,default:null},
-  photo:{type:Buffer,default:null}
+  photo:{type:String,default:null},
+  agency:{type:String,defaault:null},
+  allowAgency:{type:Boolean,default:false}
+
   
 });
 

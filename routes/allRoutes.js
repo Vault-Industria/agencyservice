@@ -5,9 +5,10 @@ const collections = require("../model/collection");
 const minted = require("../model/minted");
 const pending = require("../model/pendingusers");
 const member = require("../model/member");
+const location = require("../model/location");
 
 router.post("/insertnft", async (req, res) => {
-  const { url, strPrice, nftaddress, titles, desc, userId,fileUrl,collection,address} = req.body;
+  const { url, strPrice, nftaddress, titles, desc, userId,fileUrl,collection,address,assetCId} = req.body;
   var data = {
     url,
     owner: address,
@@ -17,6 +18,7 @@ router.post("/insertnft", async (req, res) => {
     titles,
     userId,
     desc,
+    assetCId,
     collectionz:collection
 
 
@@ -176,6 +178,69 @@ router.post("/querynft", async (req, res) => {
     }
   });
 });
+
+
+
+
+
+
+router.post("/getip", async (req, res) => {
+  const {ip,userId,wallet,assetCId,tokenId,viewed,bought,liked } = req.body;
+  const axios = require('axios').default;
+
+
+
+const options = {
+  method: 'POST',
+  url: `http://www.geoplugin.net/json.gp?ip=${ip}`,
+  headers: {Accept: 'application/json'}
+};
+
+axios
+  .request(options)
+  .then(function (response) {
+    res.send(JSON.stringify(response.data));
+    let data ={
+      owner:userId,
+      liked,
+      bought,
+      wallet,
+      assetCId,
+      tokenId,
+      viewed,
+      country:response.data.geoplugin_countryName,
+      city:response.data.geoplugin_city,
+     
+      continent:response.data.geoplugin_continentName,
+      latitude:response.data.geoplugin_latitude,
+      longitude:response.data.geoplugin_longitude,
+    }
+    location.create(data, function (err, result) {
+      if (err) {
+        res.send(err);
+      } else {
+        console.log(result);
+      }
+    });
+
+  })
+  .catch(function (error) {
+    console.error(error);
+  });
+
+
+})
+router.get("/getgeodata", async (req, res) => {
+
+  location.find({}, function (err, result) {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(result);
+      }
+    });
+
+})
 
 router.post("/reviews", async (req, res) => {});
 

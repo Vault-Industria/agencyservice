@@ -26,8 +26,8 @@ const app = express();
 app.use((req, res, next) => {
   const allowedOrigins = ['http://127.0.0.1:3000', 'http://localhost:3000',
   'http://localhost:3001', 'http://127.0.0.1:3001',
-  "https://frozen-badlands-86237.herokuapp.com/","https://vault-service.herokuapp.com",
-  "https://frozen-badlands-86237.herokuapp.com/"];
+  "https://immense-spire-43596.herokuapp.comm","https://vault-service.herokuapp.com",
+  "https://immense-spire-43596.herokuapp.com"];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
        res.setHeader('Access-Control-Allow-Origin', origin);

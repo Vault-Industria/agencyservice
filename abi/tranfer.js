@@ -1,8 +1,10 @@
 const axios = require('axios').default;
 
+
+
 const options = {
-  method: 'GET',
-  url: 'https://polygon-mumbai.g.alchemy.com/v2/demo/getNFTs?owner=0x260b265fDe6671d1948f9E2783Fe5e96583F5243&withMetadata=true',
+  method: 'POST',
+  url: 'http://www.geoplugin.net/json.gp?ip=197.217.207.207',
   headers: {Accept: 'application/json'}
 };
 
