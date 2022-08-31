@@ -31,7 +31,7 @@ router.post("/invite", async (req, res) => {
             service: 'gmail',
             auth: {
                 user: 'agencyvault7@gmail.com',
-                pass: 'tzjjhevhpzarkxfg'
+                pass: process.env.GMAIL
             }
         });
 
