@@ -8,8 +8,9 @@ const asset = require("./routes/allRoutes")
 const authRoute = require('./routes/auth')
 const collection = require('./routes/collection')
 const nfts = require('./routes/nfts')
+const invite = require('./routes/invite')
 
-const whitelist = ["https://vault-service.herokuapp.com"]
+
 // const corsOptions = {
 //   origin: function (origin, callback) {
 //     if (!origin || whitelist.indexOf(origin) !== -1) {
@@ -37,8 +38,21 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.header('Access-Control-Allow-Credentials', true);
   return next();
-});
-//app.use(cors())
+})
+// var whitelist = ["http://localhost:3000","http://localhost:3001","*"]
+// var corsOptions = {
+//   origin: function (origin, callback) {
+//     if (whitelist.indexOf(origin) !== -1) {
+//       callback(null, true)
+//     } else {
+//       callback(new Error('Not allowed by CORS'))
+//     }
+//   }
+// }
+
+// app.use(cors(corsOptions))
+
+
 app.use(express.json());
 
 
@@ -52,6 +66,7 @@ app.use("/api",asset);
 //Collection management
 app.use("/collection",collection);
 app.use("/nfts",nfts);
+app.use("/userinvite",invite)
 
 
 

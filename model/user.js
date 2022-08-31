@@ -3,6 +3,9 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
   
   user_name: { type: String, default: null },
+  first_name: { type: String, default: null },
+  last_name: { type: String, default: null },
+  company: { type: String, default: null },
   email: { type: String, unique: true },
   password: { type: String },
   token: { type: String },
@@ -19,7 +22,8 @@ const userSchema = new mongoose.Schema({
   bio:{type:String,default:null},
   photo:{type:String,default:null},
   agency:{type:String,defaault:null},
-  allowAgency:{type:Boolean,default:false}
+  allowAgency:{type:Boolean,default:false},
+  under:{type:String,defaault:null}
 
   
 });

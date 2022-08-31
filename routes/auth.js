@@ -6,9 +6,9 @@ const User = require('../model/user');
 const router = express.Router();
 
 router.post("/register", async (req, res) => {
-  const {user_name,email,phone,role,website,password,bio,agency } = req.body;
+  const {user_name,email,phone,role,website,password,bio,agency,first_name,last_name,company} = req.body;
   
-  if (!(email && password && user_name)) {
+  if (!(email && password && first_name)) {
     return res.status(400).send("All input is required");
   };
 
@@ -28,7 +28,10 @@ router.post("/register", async (req, res) => {
     role,
     website,
     bio,
-    agency
+    agency,
+    first_name,
+    last_name,
+    company
   };
   
 
@@ -103,7 +106,7 @@ router.post("/getcreators", async (req, res) => {
              },
           process.env.TOKEN_KEY,
           {
-            expiresIn: "1h",
+            expiresIn: "10m",
           }
         );
   

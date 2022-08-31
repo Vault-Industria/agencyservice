@@ -10,9 +10,12 @@ const minted = new mongoose.Schema({
   userId: { type: String, default: null },
   fileUrl:{type: String, default: null},
   collectionz:{type: String, default: null},
-  likes:{type:Array,default:null},
+
+  likes:{type:Array,default:[]},
+  like:{type:Array,default:[]},
   views:{type:Number,default:0},
   assetCId:{type:String,default:null},
+  posted_at:{type:Number,default:Date.now}
 
 
 },

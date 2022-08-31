@@ -62,18 +62,36 @@ router.get("/getnfts", async (req, res) => {
     });
   });
 
+  router.post("/like", async (req, res) => {
+    const { userid, imgid } = req.body
+    const nft =await minted.findById(imgid,)
+    try {
+      if(nft.like.includes(userid)){
+        minted.findByIdAndUpdate(imgid, { $pull: { like:userid } }, function (err, result) {
+          if (err) {
+              res.send(err);
+          } else {
+              res.send(result);
+          }
+      })
+      }else{
+        minted.findByIdAndUpdate(imgid, { $push: { like:userid } }, function (err, result) {
+          if (err) {
+              res.send(err);
+          } else {
+              res.send(result);
+          }
+      });
 
-  router.put("/like", async (req, res) => {
-    const {imgid,userid } = req.body;
-    minted.findByIdAndUpdate(imgid, { $push: { likes: userid } }, function (err, result) {
-        if (err) {
-            res.send(err);
-        } else {
-            res.send(result);
-        }
-    })
+      }
+    } catch (error) {
+      res.send(error)
+    }
+    
 
-  })
+  });
+
+  
   router.post("/views", async (req, res) => {
     const {imgid } = req.body;
     
@@ -124,6 +142,50 @@ axios
   .then(function (response) {
     console.log(JSON.stringify(response.data.result, null, 4));
     res.send(response.data.result);
+  })
+  .catch(function (error) {
+    console.error(error);
+    res.send(error);
+  });
+
+  });
+
+  router.post("/qtransactions", async (req, res) => {
+
+    const {address} = req.body;
+
+const axios = require('axios').default;
+
+const options = {
+  method: 'POST',
+  url: 'https://polygon-mumbai.g.alchemy.com/v2/demo',
+  headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
+  data: {
+    id: 1,
+    jsonrpc: '2.0',
+    method: 'alchemy_getAssetTransfers',
+    params: [
+      {
+        fromBlock: '0x0',
+        toBlock: 'latest',
+        category: ['external', 'erc721'],
+        withMetadata: false,
+        excludeZeroValue: true,
+        maxCount: '0x3e8',
+        fromAddress: address,
+        contractAddresses: ['0x4b60c4c241100e2ddb0e4af034174e0441a084af',]
+      }
+    ]
+  }
+};
+
+axios
+  .request(options)
+  .then(function (response) {
+    //console.log(JSON.stringify(response.data.result, null, 4));
+    let item = response.data.result.transfers
+    console.log( item.length)
+    res.send(item.filter((v)=>v.value!==0.025&&v.value!==null));
   })
   .catch(function (error) {
     console.error(error);
