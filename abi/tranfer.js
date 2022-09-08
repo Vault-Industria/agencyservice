@@ -11,7 +11,7 @@ const options = {
 axios
   .request(options)
   .then(function (response) {
-    console.log(JSON.stringify(response.data, null, 4));
+   
   })
   .catch(function (error) {
     console.error(error);
