@@ -8,7 +8,7 @@ const member = require("../model/member");
 const location = require("../model/location");
 
 router.post("/insertnft", async (req, res) => {
-  const { url, strPrice, nftaddress, titles, desc, userId,fileUrl,collection,address,assetCId} = req.body;
+  const { url, strPrice, nftaddress, titles, desc, userId,fileUrl,collection,address,assetCId,traits} = req.body;
   var data = {
     url,
     owner: address,
@@ -19,7 +19,8 @@ router.post("/insertnft", async (req, res) => {
     userId,
     desc,
     assetCId,
-    collectionz:collection
+    collectionz:collection,
+    traits
 
 
    
@@ -87,16 +88,21 @@ router.get("/pendingusers", async (req, res) => {
 
 router.post("/deletepending", async (request, response) => {
   const {ids} = request.body;
-  //response.send(ids);
-  try {
-    const deleted = await pending.findByIdAndDelete(ids);
-
-    if (!deleted) response.status(404).send("No item found");
-    response.status(200).send();
-  } catch (error) {
-    response.status(500).send(error);
-  }
+  pending.findByIdAndUpdate(
+    { _id: ids },
+    {status:"Rejected" },
+   
+    function (err, result) {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
 });
+  //response.send(ids);
+
 
 
 router.get("/getcollections", async (req, res) => {
@@ -179,6 +185,18 @@ router.post("/querynft", async (req, res) => {
   });
 });
 
+router.post("/getbyfile", async (req, res) => {
+  const {fileUrl } = req.body;
+  const data = {fileUrl:fileUrl};
+
+  mint.find(data, (err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
 
 
 

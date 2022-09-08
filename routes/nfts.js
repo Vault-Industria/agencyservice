@@ -16,13 +16,13 @@ router.post("/getassets", async (req, res) => {
 
   axios(config)
     .then((response) => {
-      console.log(JSON.stringify(response.data, null, 2));
+ 
       //res.status(200).json({ nfts: response.data });
      res.status(200).send(response.data);
     })
 
     .catch((error) => {
-      console.log(error);
+      
         res.status(500).send(error);
     });
 });
@@ -140,7 +140,7 @@ const options = {
 axios
   .request(options)
   .then(function (response) {
-    console.log(JSON.stringify(response.data.result, null, 4));
+  
     res.send(response.data.result);
   })
   .catch(function (error) {
@@ -182,9 +182,9 @@ const options = {
 axios
   .request(options)
   .then(function (response) {
-    //console.log(JSON.stringify(response.data.result, null, 4));
+  
     let item = response.data.result.transfers
-    console.log( item.length)
+    
     res.send(item.filter((v)=>v.value!==0.025&&v.value!==null));
   })
   .catch(function (error) {
@@ -193,6 +193,8 @@ axios
   });
 
   });
+
+
 
   
 router.post("/bought", async (req, res) => {
@@ -227,7 +229,7 @@ const options = {
 axios
   .request(options)
   .then(function (response) {
-    console.log(JSON.stringify(response.data.result, null, 4));
+   
     res.send(response.data.result);
   })
   .catch(function (error) {

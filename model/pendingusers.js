@@ -6,6 +6,7 @@ const pendingSchema = new mongoose.Schema({
   role:{type:String,default:null},
   website:{type:String,default:null},
   phone:{type:String,default:null},
+  status:{type:String,dafault:null}
   
   
 });

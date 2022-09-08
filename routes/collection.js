@@ -60,6 +60,18 @@ router.post("/collectionaddress", async (req, res) => {
   });
 });
 
+router.post("/creatorcollectionaddress", async (req, res) => {
+  const { wallets } = req.body;
+  collections.find({"address":{$in:wallets}},(err, result) => {
+    if (err) {
+     res.send('this is an error',err);
+    } else {
+     res.send(result);
+    }
+   })
+
+});
+
 router.patch("/updatecollection", async (req, res) => {
   const { collection, nft } = req.body;
   collections.findByIdAndUpdate(
@@ -97,6 +109,20 @@ router.post("/getcollectionowner", async (req, res) => {
     }
   });
 });
+
+router.post("/getcreatorcollection", async (req, res) => {
+  const { owner } = req.body;
+  collections.find({owner: owner }, function (err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+
+
 
 router.post("/getowner", async (req, res) => {
   const { owner } = req.body;

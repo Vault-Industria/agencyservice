@@ -24,7 +24,7 @@ router.post("/invite", async (req, res) => {
       async function main() {
         // Generate test SMTP service account from ethereal.email
         // Only needed if you don't have a real mail account for testing
-        let testAccount = await nodemailer.createTestAccount();
+       
 
         // create reusable transporter object using the default SMTP transport
         var transporter =   nodemailer.createTransport({
@@ -37,12 +37,12 @@ router.post("/invite", async (req, res) => {
 
         // send mail with defined transport object
         let info = await transporter.sendMail({
-          from: '"VaultIndustria👻" <foo@example.com>', // sender address
+          from: '"VaultIndustria👻" <agencyvault7@gmail.com>', // sender address
           to: email, // list of receivers
           subject: "Link for registration ✔", // Subject line
-          text: 'http://localhost:3000/user-agreement', // plain text body
+          text: 'http://localhost:3001/user-agreement', // plain text body
           html: `<b>Follow the link to register:</b>
-          <a href=${'http://localhost:3000/user-agreement'}/>Register</a>
+          <a href=${'http://localhost:3001/user-agreement'}/>Register</a>
           `, // html body
         });
 
@@ -70,6 +70,18 @@ router.get("/pending",async(req,res)=>{
         }
 
     })
+})
+
+router.post("/verify",async(req,res)=>{
+  const {email}=req.body
+  invite.find({email:email},function(err,result){
+      if(err){
+          res.send(err)
+      }else{
+          res.send(result)
+      }
+
+  })
 })
 
 module.exports = router;

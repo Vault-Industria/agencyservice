@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const express = require('express');
 const User = require('../model/user');
+const user = require('../model/user');
 
 const router = express.Router();
 
@@ -125,6 +126,17 @@ router.post("/getcreators", async (req, res) => {
     }
     // Our register logic ends here
   });
+
+  router.post("/agencycreator",async(req,res)=>{
+    const {creators} = req.body
+    user.find({"_id":{$in:creators}},(err, result) => {
+           if (err) {
+            res.send('this is an error',err);
+           } else {
+            res.send(result);
+           }
+          })
+  })
 
   
 

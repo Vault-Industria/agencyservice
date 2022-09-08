@@ -15,6 +15,7 @@ const minted = new mongoose.Schema({
   like:{type:Array,default:[]},
   views:{type:Number,default:0},
   assetCId:{type:String,default:null},
+  traits:{type:Array,default:[]},
   posted_at:{type:Number,default:Date.now}
 
 
