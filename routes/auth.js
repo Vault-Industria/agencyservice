@@ -7,7 +7,7 @@ const user = require('../model/user');
 const router = express.Router();
 
 router.post("/register", async (req, res) => {
-  const {user_name,email,phone,role,website,password,bio,agency,first_name,last_name,company} = req.body;
+  const {user_name,email,phone,role,website,password,bio,agency,first_name,last_name,company,paid,agreement_date} = req.body;
   
   if (!(email && password && first_name)) {
     return res.status(400).send("All input is required");
@@ -32,7 +32,9 @@ router.post("/register", async (req, res) => {
     agency,
     first_name,
     last_name,
-    company
+    company,
+    paid,
+    agreement_date
   };
   
 

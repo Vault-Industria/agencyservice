@@ -23,7 +23,8 @@ const userSchema = new mongoose.Schema({
   photo:{type:String,default:null},
   agency:{type:String,defaault:null},
   allowAgency:{type:Boolean,default:false},
-  under:{type:String,defaault:null}
+  under:{type:String,defaault:null},
+  paid:{type:Boolean,default:null}
 
   
 });

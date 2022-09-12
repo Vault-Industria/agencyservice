@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@stripe/stripe-js": "^1.36.0",
     "api": "^4.5.2",
     "axios": "^0.27.2",
     "bcryptjs": "^2.4.3",
@@ -22,6 +23,7 @@
     "mailtrap": "^3.0.0",
     "mongoose": "^6.4.2",
     "nodemailer": "^6.7.8",
+    "stripe": "^10.8.0",
     "web3": "^1.7.4"
   },
   "devDependencies": {
