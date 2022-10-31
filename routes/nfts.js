@@ -185,9 +185,10 @@ axios
   .request(options)
   .then(function (response) {
   
-    let item = response.data.result.transfers
+    let item = response.data.result.transfers;
+    res.send(item)
     
-    res.send(item.filter((v)=>v.value!==0.025&&v.value!==null));
+    // res.send(item.filter((v)=>v.value!==0.025&&v.value!==null));
   })
   .catch(function (error) {
     console.error(error);

@@ -58,6 +58,18 @@ router.get("/getusers", async (req, res) => {
   });
 });
 
+router.post("/getCreators", async (req, res) => {
+  const { ids } = req.body;
+  User.find({_id:{$in:ids}},(err, result) => {
+    if (err) {
+     res.send('this is an error',err);
+    } else {
+     res.send(result);
+    }
+   })
+
+});
+
 
 
 

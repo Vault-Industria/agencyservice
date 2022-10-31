@@ -24,7 +24,8 @@ const userSchema = new mongoose.Schema({
   agency:{type:String,defaault:null},
   allowAgency:{type:Boolean,default:false},
   under:{type:String,defaault:null},
-  paid:{type:Boolean,default:null}
+  paid:{type:Boolean,default:null},
+  agreement_date:{type:String,default:null}
 
   
 });

@@ -4,13 +4,14 @@ require("../config/database").connect();
 const router = require("express").Router();
 
 router.post("/invite", async (req, res) => {
-  const { email, waiver, revenueshare, deliverables } = req.body;
+  const { email, waiver, revenueshare, deliverables,role } = req.body;
 
   const data = {
     email,
     waiver,
     revenueshare,
     deliverables,
+    role
   };
 
   invite.create(data, function (err, result) {
@@ -86,6 +87,59 @@ router.post("/verify",async(req,res)=>{
 const Stripe = require("stripe")
 const stripe = new Stripe(process.env.SECRET)
 router.post("/subscribe",async(req,res)=>{
+ 
+  const {email,name,paymentMethod} = req.body
+  try {
+  
+    //Create a customer
+    const customer =  await stripe.customers.create({
+      email,
+      name,
+      payment_method:paymentMethod,
+      invoice_settings:{default_payment_method:paymentMethod},
+    });
+
+    const product = await stripe.products.create({
+      name:"Monthly subscription"
+    });
+
+    //create subscription
+    const subscription = await stripe.subscriptions.create({
+      customer:customer.id,
+      items:[
+        {
+          price_data:{
+            currency:"USD",
+            product:product.id,
+            unit_amount:"5000",
+            recurring:{
+              interval:"month"
+            }
+          }
+        }
+      ],
+      payment_settings:{
+        payment_method_types:['card'],
+        save_default_payment_method:"on_subscription",
+
+      },
+      expand:['latest_invoice.payment_intent']
+    });
+
+    //send back client secret
+    res.json({
+      message:'Subscription successful',
+      clientSecret:subscription.latest_invoice.payment_intent.client_secret,
+      subscriptionId:subscription.id
+    });
+
+  }catch(err){
+    console.log(err);
+    res.json({message:"Internal server error"});
+  }
+});
+
+router.post("/creatorsubscribe",async(req,res)=>{
  
   const {email,name,paymentMethod} = req.body
   try {
