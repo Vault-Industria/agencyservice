@@ -8,7 +8,8 @@ const asset = require("./routes/allRoutes")
 const authRoute = require('./routes/auth')
 const collection = require('./routes/collection')
 const nfts = require('./routes/nfts')
-const invite = require('./routes/invite')
+const invite = require('./routes/invite');
+const artist = require('./routes/art');
 
 
 // const corsOptions = {
@@ -68,6 +69,9 @@ app.use("/api",asset);
 app.use("/collection",collection);
 app.use("/nfts",nfts);
 app.use("/userinvite",invite)
+
+//artist management
+app.use("/artist",artist);
 
 
 
