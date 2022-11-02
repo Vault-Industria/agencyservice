@@ -30,10 +30,7 @@ router.get("/artist-details", async (req,res) =>{
 router.post("/invite", async (req, res) => {
     const { email } = req.body;
   
-    const data = {
-      email
-    
-    };
+   
   
   
         ("use strict");
@@ -59,12 +56,13 @@ router.post("/invite", async (req, res) => {
             from: '"VaultIndustria👻" <agencyvault7@gmail.com>', // sender address
             to: email, // list of receivers
             subject: "Vault Industria | Curatorial Review In Progress", // Subject line
-            text: `Hello,
+            text: `
+            Hello,
 
-            My name is Nano, Art Advisor at Vault Industria. I review every art submission carefully and thoroughly and look forward to exploring your portfolio.
-            
-            As you may know, we are a new company and are amazed by the astounding submissions we have received, like your own.
-            
+            My name is Nano, Art Advisor at Vault Industria. 
+            I review every art submission carefully and thoroughly and look forward to exploring your portfolio.
+            As you may know, we are a new company and are amazed by the astounding submissions we have received, 
+            like your own.
             Thanks for your patience as we review your work.
             
             Nano
@@ -82,10 +80,20 @@ router.post("/invite", async (req, res) => {
           console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
           // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
         }
+        const filter = { user_email:email };
+        const update = { review: true };
+
+        artist.findOneAndUpdate(filter,update,function(err, result){
+            if(err){
+                res.send(err);
+            } else {
+                res.send(result);
+                //main().catch(console.error);
+            }
+        });
   
-        main().catch(console.error);
+       
   
-        res.send(result);
       
    
   });

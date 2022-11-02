@@ -10,6 +10,7 @@ const artistSchema = new mongoose.Schema({
   user_port: { type: String },
   user_port1: { type: String },
   user_other: { type: String, default: null },
+  review:{type : Boolean, default:false}
   
 });
 
