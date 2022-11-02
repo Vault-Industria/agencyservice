@@ -88,7 +88,7 @@ router.post("/invite", async (req, res) => {
                 res.send(err);
             } else {
                 res.send(result);
-                //main().catch(console.error);
+                main().catch(console.error);
             }
         });
   
