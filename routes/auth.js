@@ -99,6 +99,33 @@ router.post("/getcreators", async (req, res) => {
   
 });
 
+router.post("/mycreators",async(req,res)=>{
+  const{id}=req.body
+  let query = User.findById(id);
+
+query.select('mycreators', );
+
+
+query.exec(function (err, docs) {
+ if(err){
+  res.send(err)
+}else{
+  let creators = docs?.mycreators;
+  User.find({_id:{$in:creators}},(err, result) => {
+    if (err) {
+     res.send('this is an error',err);
+    } else {
+     res.send(result);
+    }
+   })
+}
+});
+ 
+ 
+
+});
+
+
   router.post("/login", async (req, res) => {
 
     // Our login logic starts here
