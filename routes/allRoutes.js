@@ -2,7 +2,6 @@ require("../config/database").connect();
 const router = require("express").Router();
 const mint = require("../model/minted");
 const collections = require("../model/collection");
-const minted = require("../model/minted");
 const pending = require("../model/pendingusers");
 const member = require("../model/member");
 const location = require("../model/location");
@@ -197,6 +196,33 @@ router.post("/getbyfile", async (req, res) => {
     }
   });
 });
+
+router.post("/setviews", async (req,res)=>{
+  const {id,latitude,longitude} = req.body
+  let data = {"latitude":latitude,"longitude":longitude}
+  // mint.find({"assetCId":id}, (err, result) => {
+  //   if (err) {
+  //     res.send(err);
+  //   } else {
+  //     res.send(result);
+  //   }
+  // });
+  mint.findOneAndUpdate(
+    {_id:id} ,
+    { $push: {views:data } },
+  ).exec();
+ 
+  // mint.findOneAndUpdate(assetCId,
+  //   {$push:{views:data}},
+  // function(err,result){
+  //   if(err){
+  //     res.send(err);
+  //   }else{
+  //     res.send(result)
+  //   }
+  // })
+});
+
 
 
 

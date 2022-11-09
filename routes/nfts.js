@@ -2,6 +2,7 @@ const axios = require("axios");
 const minted = require("../model/minted");
 require("../config/database").connect();
 const router = require("express").Router();
+const contractAddress = process.env.CONTRACT
 
 router.post("/getassets", async (req, res) => {
   let {owner} = req.body;
@@ -26,6 +27,31 @@ router.post("/getassets", async (req, res) => {
         res.status(500).send(error);
     });
 });
+
+
+router.post('/getmynft', async(req,res)=>{
+  let {owner} = req.body;
+  const options = {
+    method: 'GET',
+    url: 'https://polygon-mumbai.g.alchemy.com/nft/v2/Dw_2lYaxcgvVwj3Cd5-WEGBnX5b4NWvW/getNFTs',
+    params: {owner: owner, withMetadata: 'false'},
+    headers: {accept: 'application/json'}
+  };
+  
+  axios
+    .request(options)
+    .then(function (response) {
+      console.log(response.data);
+      res.send(response.data);
+    })
+    .catch(function (error) {
+      console.error(error);
+      res.send(error);
+    });
+
+})
+
+
 
 
 
@@ -133,7 +159,7 @@ const options = {
         excludeZeroValue: true,
         maxCount: '0x3e8',
         fromAddress: address,
-        contractAddresses: ['0xb8F16957b1Bf7402E6f91f0d2796D41Fa25A5697',]
+        contractAddresses: [`${contractAddress}`,]
       }
     ]
   }
