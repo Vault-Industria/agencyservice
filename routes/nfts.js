@@ -28,7 +28,7 @@ router.post("/getassets", async (req, res) => {
     });
 });
 
-
+//getting assets owned by a particular address
 router.post('/getmynft', async(req,res)=>{
   let {owner} = req.body;
   const options = {
@@ -50,6 +50,97 @@ router.post('/getmynft', async(req,res)=>{
     });
 
 })
+
+
+//get transacations with contract value transfer from buyer paying contract
+
+router.post("/buyertocontract", async(req,res)=>{
+  let {owner} = req.body;
+ 
+
+  const options = {
+    method: 'POST',
+    url: 'https://polygon-mumbai.g.alchemy.com/v2/Dw_2lYaxcgvVwj3Cd5-WEGBnX5b4NWvW',
+   
+    headers: {accept: 'application/json', 'content-type': 'application/json'},
+    data: {
+      id: 1,
+      jsonrpc: '2.0',
+      method: 'alchemy_getAssetTransfers',
+      params: [
+        {
+          fromBlock: '0x0',
+          toBlock: 'latest',
+          category: ['external','erc20','erc721'],
+          toAddress:"0xB2296EdF139af8820b3AbA94AE796676c3c82a24",
+          fromAddress:"0x47973b9B9515A816f2bB0f13F2463f6adBE1A791",
+          withMetadata: false,
+          excludeZeroValue: true,
+          maxCount: '0x3e8'
+        }
+      ]
+    }
+  };
+  
+  axios
+    .request(options)
+    .then(function (response) {
+      res.send(response.data);
+    })
+    .catch(function (error) {
+      res.send(error);
+      console.error(error);
+    });
+
+
+});
+
+
+//value transfer from contract to seller
+
+
+router.post("/contracttoseller", async(req,res)=>{
+  let {owner} = req.body;
+ 
+
+  const options = {
+    method: 'POST',
+    url: 'https://polygon-mumbai.g.alchemy.com/v2/Dw_2lYaxcgvVwj3Cd5-WEGBnX5b4NWvW',
+   
+    headers: {accept: 'application/json', 'content-type': 'application/json'},
+    data: {
+      id: 1,
+      jsonrpc: '2.0',
+      method: 'alchemy_getAssetTransfers',
+      params: [
+        {
+          fromBlock: '0x0',
+          toBlock: 'latest',
+          category: ['external','erc20','erc721'],
+          fromAddress:"0x50EfD88590B1Ac5Fe722C18DA2fCcfCD25246246",
+          toAddress:"0xB2296EdF139af8820b3AbA94AE796676c3c82a24",
+          withMetadata: false,
+          excludeZeroValue: true,
+          maxCount: '0x3e8'
+        }
+      ]
+    }
+  };
+  
+  axios
+    .request(options)
+    .then(function (response) {
+      res.send(response.data);
+    })
+    .catch(function (error) {
+      res.send(error);
+      console.error(error);
+    });
+
+
+})
+
+
 
 
 

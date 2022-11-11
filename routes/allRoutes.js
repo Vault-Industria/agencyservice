@@ -200,29 +200,51 @@ router.post("/getbyfile", async (req, res) => {
 router.post("/setviews", async (req,res)=>{
   const {id,latitude,longitude} = req.body
   let data = {"latitude":latitude,"longitude":longitude}
-  // mint.find({"assetCId":id}, (err, result) => {
-  //   if (err) {
-  //     res.send(err);
-  //   } else {
-  //     res.send(result);
-  //   }
-  // });
-  mint.findOneAndUpdate(
-    {_id:id} ,
-    { $push: {views:data } },
-  ).exec();
+  if(latitude&&longitude){
  
-  // mint.findOneAndUpdate(assetCId,
-  //   {$push:{views:data}},
-  // function(err,result){
-  //   if(err){
-  //     res.send(err);
-  //   }else{
-  //     res.send(result)
-  //   }
-  // })
+ 
+  mint.findByIdAndUpdate(
+    id,
+    {$push: {"views": {"latitude":latitude,"longitude":longitude}}},
+    {safe: true, upsert: true},
+    function(err, model) {
+        if(err){
+          res.send(err)
+        }else{
+          res.send(model)
+        }
+    }
+);
+  }
+ 
+
 });
 
+router.post("/getmyviews",async(req,res)=>{
+  const {owner} = req.body;
+  const data = {owner:owner};
+  let query = mint.find(data).select("views");
+  query.exec(function (err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+})
+
+router.post("/getmylikes",async(req,res)=>{
+  const {owner} = req.body;
+  const data = {owner:owner};
+  let query = mint.find(data).select("like");
+  query.exec(function (err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+})
 
 
 
