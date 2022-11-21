@@ -116,10 +116,11 @@ router.post("/contracttoseller", async(req,res)=>{
         {
           fromBlock: '0x0',
           toBlock: 'latest',
-          category: ['external','erc20','erc721'],
-          fromAddress:"0x50EfD88590B1Ac5Fe722C18DA2fCcfCD25246246",
-          toAddress:"0xB2296EdF139af8820b3AbA94AE796676c3c82a24",
-          withMetadata: false,
+          category: ['erc721'],
+          // toAddress:"0xbDE2516B5740000f073923a7FDBe7cb43A0E390E",
+          // toAddress:"0x0000000000000000000000000000000000000000",
+          fromAddress:"0x71aa474b99926070Ae2AA21c0575835AA6494F79",
+          withMetadata: true,
           excludeZeroValue: true,
           maxCount: '0x3e8'
         }

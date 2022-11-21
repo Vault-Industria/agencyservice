@@ -10,6 +10,7 @@ const collection = require('./routes/collection')
 const nfts = require('./routes/nfts')
 const invite = require('./routes/invite');
 const artist = require('./routes/art');
+const stats = require('./routes/stats')
 
 
 // const corsOptions = {
@@ -72,6 +73,7 @@ app.use("/userinvite",invite)
 
 //artist management
 app.use("/artist",artist);
+app.use("/stats",stats);
 
 
 
