@@ -220,6 +220,30 @@ router.post("/setviews", async (req,res)=>{
 
 });
 
+
+router.post("/setsales", async (req,res)=>{
+  const {id,latitude,longitude} = req.body
+  let data = {"latitude":latitude,"longitude":longitude}
+  if(latitude&&longitude){
+ 
+ 
+  mint.findByIdAndUpdate(
+    id,
+    {$push: {"sales": {"latitude":latitude,"longitude":longitude}}},
+    {safe: true, upsert: true},
+    function(err, model) {
+        if(err){
+          res.send(err)
+        }else{
+          res.send(model)
+        }
+    }
+);
+  }
+ 
+
+});
+
 router.post("/getmyviews",async(req,res)=>{
   const {owner} = req.body;
   const data = {owner:owner};

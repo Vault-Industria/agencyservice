@@ -151,17 +151,7 @@ router.post("/geoviews", async (req, res) => {
         .flat()
         .filter((item) => item !== null);
 
-      [
-        { latitude: -1.307241, longitude: 36.8371 },
-        { latitude: -1.307241, longitude: 36.8371 },
-        { latitude: -1.307241, longitude: 36.8371 },
-        { latitude: -3.4745371, longitude: 30.176189 },
-        { latitude: -13.344209, longitude: 33.459318 },
-        { latitude: -28.422885, longitude: 27.221102 },
-        { latitude: -28.422885, longitude: 27.221102 },
-        { latitude: -28.422885, longitude: 27.221102 },
-        { latitude: -28.422885, longitude: 27.221102 },
-      ].map((item) => {
+        coordinates.map((item) => {
         promises.push(
           axios
             .get(
