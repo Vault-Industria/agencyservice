@@ -198,10 +198,10 @@ router.post("/getbyfile", async (req, res) => {
 });
 
 router.post("/setviews", async (req,res)=>{
-  const {id,latitude,longitude} = req.body
-  let data = {"latitude":latitude,"longitude":longitude}
+  const {data,latitude,longitude} = req.body
+
   if(latitude&&longitude){
- 
+ let id =data;
  
   mint.findByIdAndUpdate(
     id,
@@ -222,14 +222,37 @@ router.post("/setviews", async (req,res)=>{
 
 
 router.post("/setsales", async (req,res)=>{
-  const {id,latitude,longitude} = req.body
-  let data = {"latitude":latitude,"longitude":longitude}
-  if(latitude&&longitude){
+  const {data,latitude,longitude} = req.body
  
+  if(latitude&&longitude){
+    let id =data;
  
   mint.findByIdAndUpdate(
     id,
     {$push: {"sales": {"latitude":latitude,"longitude":longitude}}},
+    {safe: true, upsert: true},
+    function(err, model) {
+        if(err){
+          res.send(err)
+        }else{
+          res.send(model)
+        }
+    }
+);
+  }
+ 
+
+});
+
+router.post("/setlikes", async (req,res)=>{
+  const {data,latitude,longitude} = req.body
+ 
+  if(latitude&&longitude){
+    let id =data;
+ 
+  mint.findByIdAndUpdate(
+    id,
+    {$push: {"likes": {"latitude":latitude,"longitude":longitude}}},
     {safe: true, upsert: true},
     function(err, model) {
         if(err){

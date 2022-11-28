@@ -139,7 +139,7 @@ router.post("/puli", async (req, res) => {
 });
 
 router.post("/geoviews", async (req, res) => {
-  owner = "0x47973b9B9515A816f2bB0f13F2463f6adBE1A791";
+  const {owner} = req.body
   const promises = [];
   let myres = [];
   minted.find({ owner: owner }, function (err, result) {
@@ -179,6 +179,93 @@ router.post("/geoviews", async (req, res) => {
     }
   });
 });
+
+router.post("/geosales", async (req, res) => {
+  const {owner} = req.body
+  const promises = [];
+  let myres = [];
+  minted.find({ owner: owner }, function (err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      let coordinates = result
+        .map((item) => item.sales)
+        .flat()
+        .filter((item) => item !== null);
+
+        coordinates.map((item) => {
+        promises.push(
+          axios
+            .get(
+              `https://api.opencagedata.com/geocode/v1/json?q=${item.latitude}+${item.longitude}&key=d437203532ad46199d7bde410b37689b`
+            )
+            .then((response) => {
+              myres.push(response.data?.results[0]?.components.country);
+            })
+        );
+      });
+
+      Promise.all(promises).then(() => {
+        const count = {};
+
+        for (const element of myres) {
+          if (count[element]) {
+            count[element] += 1;
+          } else {
+            count[element] = 1;
+          }
+        }
+        let darray = Object.entries(count);
+        res.send(darray);
+      });
+    }
+  });
+});
+
+router.post("/geolikes", async (req, res) => {
+  const {owner} = req.body
+ 
+  const promises = [];
+  let myres = [];
+  minted.find({ owner: owner }, function (err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      let coordinates = result
+        .map((item) => item.likes)
+        .flat()
+        .filter((item) => item !== null);
+
+        coordinates.map((item) => {
+        promises.push(
+          axios
+            .get(
+              `https://api.opencagedata.com/geocode/v1/json?q=${item.latitude}+${item.longitude}&key=d437203532ad46199d7bde410b37689b`
+            )
+            .then((response) => {
+              myres.push(response.data?.results[0]?.components.country);
+            })
+        );
+      });
+
+      Promise.all(promises).then(() => {
+        const count = {};
+
+        for (const element of myres) {
+          if (count[element]) {
+            count[element] += 1;
+          } else {
+            count[element] = 1;
+          }
+        }
+        let darray = Object.entries(count);
+        res.send(darray);
+      });
+    }
+  });
+});
+
+
 
 router.post("/actual", async (req, res) => {
   axios
