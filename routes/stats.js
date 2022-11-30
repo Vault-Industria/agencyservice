@@ -1,14 +1,16 @@
 const axios = require("axios");
+const ethers = require("ethers");
 const { promises } = require("nodemailer/lib/xoauth2");
 const minted = require("../model/minted");
-creators = require("../model/user");
+const creators = require("../model/user");
+const coos = require("../model/user");
 require("../config/database").connect();
 const router = require("express").Router();
 const contractAddress = process.env.CONTRACT;
-const web3ApiKey =
-  "AKGGfa9EKXXIPdRLov2CnhaZ7zQGMrlumKwa9LkhfU2GOgcu8t2ctBFtxXpMtZz0";
+const web3ApiKey =MORALIS_API_KEY;
 
-const address = "0x47973b9B9515A816f2bB0f13F2463f6adBE1A791";
+
+
 
 router.post("/topcreators", async (req, res) => {
   creators.find(
@@ -32,7 +34,7 @@ router.post("/topcreators", async (req, res) => {
               res.send(response.data);
             })
             .catch(function (error) {
-              console.error(error);
+              res.send(error);
             });
         });
       }
@@ -41,45 +43,91 @@ router.post("/topcreators", async (req, res) => {
 });
 
 router.post("/transfers1", async (req, res) => {
+  const {owner} = req.body
   const promises = [];
   const returnItem = [];
-  let id = ["1", "2", "3", "4"];
+  let id = [];
+  const tops = [];
+  const creators = [];
+  const wallets = [];
 
-  const contract = "0xAa78c4c839bB199b69b89489Fb8d80Dc3B80d839";
-  // let json = JSON.stringify(id);
+  minted.find({}, function (err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      result.forEach((element) => {
+        id.push(element.assetCId);
+      });
+  
 
-  for (let i = 0; i <= id.length; i++) {
-    let options = {
-      method: "GET",
-      url: `https://deep-index.moralis.io/api/v2/nft/${contract}/${id[i]}/transfers?chain=mumbai&format=decimal`,
-      headers: { accept: "application/json", "X-API-Key": web3ApiKey },
-    };
+      for (let i = 0; i <= id.length; i++) {
+        let options = {
+          method: "GET",
+          url: `https://deep-index.moralis.io/api/v2/nft/${contractAddress}/${id[i]}/transfers?chain=mumbai&format=decimal`,
+          headers: { accept: "application/json", "X-API-Key": web3ApiKey },
+        };
 
-    promises.push(
-      axios
-        .request(options)
-        .then(function (response) {
-          returnItem.push(response.data);
-        })
+        promises.push(
+          axios
+            .request(options)
+            .then(function (response) {
+              returnItem.push(response.data);
+            })
 
-        .catch(function (error) {})
-    );
-  }
-  Promise.all(promises).then(() => {
-    let filtered = returnItem.filter((item) => item.total === 3);
-    let result = filtered
-      .map((item) => item.result)
-      .flat()
-      .filter((arr) => arr.value !== "0");
+            .catch(function (error) {})
+        );
+      }
+      Promise.all(promises).then(() => {
+        let filtered = returnItem.filter((item) => item.total === 3);
+        let result = filtered
+          .map((item) => item.result)
+          .flat()
+          .filter((arr) => arr.value !== "0");
 
-    res.send(result);
+        result.forEach((item) => {
+          tops.push({
+            wallet: item.to_address,
+            value: ethers.utils.formatEther(item.value),
+          });
+          wallets.push(item.to_address);
+        });
+        let query = coos.find({ wallet: { $in: wallets } });
+        query.exec(function (err, result) {
+          if (err) {
+            res.send(err);
+          }
+
+          const combinedArray = tops.map(function (item) {
+            let newItem = Object.assign({}, item);
+            let match = result.find(function (item2) {
+              return item2.wallet === item.wallet;
+            });
+            return Object.assign(newItem, match);
+          });
+          const toSend = [];
+
+          combinedArray.forEach((item) => {
+            toSend.push({
+              wallet: item.wallet,
+              value: item.value,
+              username: item._doc.user_name,
+              fname: item._doc.first_name,
+              lname: item._doc.last_name,
+              company: item._doc.company,
+            });
+          });
+
+          res.send(toSend);
+        });
+      });
+    }
   });
 });
 
 router.post("/simle", async (req, res) => {
-  let ids = ["2", "3", "4"];
+  let ids = [];
   let myres = [];
-  const contract = "0xAa78c4c839bB199b69b89489Fb8d80Dc3B80d839";
+  
   const promises = [];
   const config = {
     headers: { accept: "application/json", "X-API-Key": web3ApiKey },
@@ -89,7 +137,7 @@ router.post("/simle", async (req, res) => {
     promises.push(
       axios
         .get(
-          `https://deep-index.moralis.io/api/v2/nft/${contract}/${ids[i]}/transfers?chain=mumbai&format=decimal`,
+          `https://deep-index.moralis.io/api/v2/nft/${contractAddress}/${ids[i]}/transfers?chain=mumbai&format=decimal`,
           config
         )
         .then((response) => {
@@ -103,14 +151,14 @@ router.post("/simle", async (req, res) => {
 
 router.post("/puli", async (req, res) => {
   const toReturn = [];
-  const ids = ["1", "2", "3", "4"];
+  const ids = [];
   let requests = ids.map((id) => {
     //create a promise for each api
     return new Promise((resolve, reject) => {
-      let contract = "0xAa78c4c839bB199b69b89489Fb8d80Dc3B80d839";
+      
       let options = {
         method: "GET",
-        url: `https://deep-index.moralis.io/api/v2/nft/${contract}/${id}/transfers?chain=mumbai&format=decimal`,
+        url: `https://deep-index.moralis.io/api/v2/nft/${contractAddress}/${id}/transfers?chain=mumbai&format=decimal`,
         headers: { accept: "application/json", "X-API-Key": web3ApiKey },
       };
 
@@ -135,11 +183,11 @@ router.post("/puli", async (req, res) => {
           res.send(toReturn);
         });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => res.send(err));
 });
 
 router.post("/geoviews", async (req, res) => {
-  const {owner} = req.body
+  const { owner } = req.body;
   const promises = [];
   let myres = [];
   minted.find({ owner: owner }, function (err, result) {
@@ -151,7 +199,7 @@ router.post("/geoviews", async (req, res) => {
         .flat()
         .filter((item) => item !== null);
 
-        coordinates.map((item) => {
+      coordinates.map((item) => {
         promises.push(
           axios
             .get(
@@ -181,7 +229,7 @@ router.post("/geoviews", async (req, res) => {
 });
 
 router.post("/geosales", async (req, res) => {
-  const {owner} = req.body
+  const { owner } = req.body;
   const promises = [];
   let myres = [];
   minted.find({ owner: owner }, function (err, result) {
@@ -193,7 +241,7 @@ router.post("/geosales", async (req, res) => {
         .flat()
         .filter((item) => item !== null);
 
-        coordinates.map((item) => {
+      coordinates.map((item) => {
         promises.push(
           axios
             .get(
@@ -223,8 +271,8 @@ router.post("/geosales", async (req, res) => {
 });
 
 router.post("/geolikes", async (req, res) => {
-  const {owner} = req.body
- 
+  const { owner } = req.body;
+
   const promises = [];
   let myres = [];
   minted.find({ owner: owner }, function (err, result) {
@@ -236,7 +284,7 @@ router.post("/geolikes", async (req, res) => {
         .flat()
         .filter((item) => item !== null);
 
-        coordinates.map((item) => {
+      coordinates.map((item) => {
         promises.push(
           axios
             .get(
@@ -265,17 +313,232 @@ router.post("/geolikes", async (req, res) => {
   });
 });
 
+router.post("/agencyassets", async (req, res) => {
+  const {id} = req.body
+  coos.find({ _id: id }, function (err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      //res.send(result[0].mycreators)
+      let query = coos.find({ _id: { $in: result[0]?.mycreators } });
+      query.exec(function (err, result) {
+        if (err) {
+          res.send(err);
+        } else {
+          const creatorWallets = [];
+          result.forEach((element) => {
+            creatorWallets.push(element.wallet);
+          });
 
+          let query0 = minted.find({ owner: { $in: creatorWallets } });
+          query0.exec(function (err, result) {
+            if (err) {
+              res.send(err);
+            } else {
+              res.send(result);
+            }
+          });
+        }
+      });
+    }
+  });
+});
 
-router.post("/actual", async (req, res) => {
+router.post("/detailedtrans", async (req, res) => {
+  const { owner } = req.body;
+  const from_address = "0xbde2516b5740000f073923a7fdbe7cb43a0e390e";
+
+  const options = {
+    method: "GET",
+
+    url: `https://deep-index.moralis.io/api/v2/${owner}/nft/transfers?chain=mumbai&format=decimal&direction=both`,
+    headers: { accept: "application/json", "X-API-Key": web3ApiKey },
+  };
+
   axios
-    .get(
-      `https://api.opencagedata.com/geocode/v1/json?q=${" -1.25909"}+${"36.7858"}&key=d437203532ad46199d7bde410b37689b`
-    )
-    .then((response) => {
-      myres.push(response.data?.results[0]?.components.country);
+    .request(options)
+    .then(function (response) {
+      let filt = response.data?.result;
+      let filtered = filt.filter((item) => item.from_address === from_address);
+      res.send(filtered);
     })
-    .catch((err) => console.log(err));
+    .catch(function (error) {
+      res.send(error);
+    });
+});
+
+router.post("/creatorvalue", async (req, res) => {
+  const {owner} = req.body
+
+  minted
+    .find({ owner: owner })
+    .where("sold")
+    .equals(true)
+    .exec(function (err, result) {
+      if (err) {
+        res.send(err);
+      } else {
+        let sum = result.reduce(function (sum, obj) {
+          return sum + Number(obj.strPrice);
+        }, 0);
+        res.send(`${sum}`);
+      }
+    });
+});
+
+router.post("/agencyvalue", async (req, res) => {
+  const {id} = req.body
+  coos.find({ _id: id }, function (err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      //res.send(result[0].mycreators)
+      let query = coos.find({ _id: { $in: result[0]?.mycreators } });
+      query.exec(function (err, result) {
+        if (err) {
+          res.send(err);
+        } else {
+          const creatorWallets = [];
+          result.forEach((element) => {
+            creatorWallets.push(element.wallet);
+          });
+
+          let query0 = minted.find({ owner: { $in: creatorWallets } });
+          query0.exec(function (err, result) {
+            if (err) {
+              res.send(err);
+            } else {
+              let sum = result.reduce(function (sum, obj) {
+                return sum + Number(obj.strPrice);
+              }, 0);
+              res.send(`${sum}`);
+            }
+          });
+        }
+      });
+    }
+  });
+});
+
+router.post("/totalvalue", async (req, res) => {
+  coos.find({}, function (err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      //res.send(result[0].mycreators)
+      let query = coos.find({ _id: { $in: result[0]?.mycreators } });
+      query.exec(function (err, result) {
+        if (err) {
+          res.send(err);
+        } else {
+          const creatorWallets = [];
+          result.forEach((element) => {
+            creatorWallets.push(element.wallet);
+          });
+
+          let query0 = minted.find({ owner: { $in: creatorWallets } });
+          query0.exec(function (err, result) {
+            if (err) {
+              res.send(err);
+            } else {
+              let sum = result.reduce(function (sum, obj) {
+                return sum + Number(obj.strPrice);
+              }, 0);
+              res.send(`${sum}`);
+            }
+          });
+        }
+      });
+    }
+  });
+});
+
+router.post("/mycreators", async (req, res) => {
+  const {id} = req.body
+  coos.find({ _id: id }, function (err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      //res.send(result[0].mycreators)
+      let query = coos.find({ _id: { $in: result[0]?.mycreators } });
+      query.exec(function (err, result) {
+        if (err) {
+          res.send(err);
+        } else {
+          let creators = result.length;
+          res.send(`${creators}`);
+        }
+      });
+    }
+  });
+});
+
+router.post("/mycreatorviews", async (req, res) => {
+  const {id} = req.body
+  coos.find({ _id: id }, function (err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      //res.send(result[0].mycreators)
+      let query = coos.find({ _id: { $in: result[0]?.mycreators } });
+      query.exec(function (err, result) {
+        if (err) {
+          res.send(err);
+        } else {
+          const creatorWallets = [];
+          result.forEach((element) => {
+            creatorWallets.push(element.wallet);
+          });
+
+          let query0 = minted.find({ owner: { $in: creatorWallets } });
+          query0.exec(function (err, result) {
+            if (err) {
+              res.send(err);
+            } else {
+              let sum = result.reduce(function (sum, obj) {
+                return sum + obj.views.length;
+              }, 0);
+              res.send(`${sum}`);
+            }
+          });
+        }
+      });
+    }
+  });
+});
+
+router.post("/mycreatorlikes", async (req, res) => {
+  const {id} = req.body
+  coos.find({ _id: id }, function (err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      //res.send(result[0].mycreators)
+      let query = coos.find({ _id: { $in: result[0]?.mycreators } });
+      query.exec(function (err, result) {
+        if (err) {
+          res.send(err);
+        } else {
+          const creatorWallets = [];
+          result.forEach((element) => {
+            creatorWallets.push(element.wallet);
+          });
+
+          let query0 = minted.find({ owner: { $in: creatorWallets } });
+          query0.exec(function (err, result) {
+            if (err) {
+              res.send(err);
+            } else {
+              let sum = result.reduce(function (sum, obj) {
+                return sum + obj.likes.length;
+              }, 0);
+              res.send(`${sum}`);
+            }
+          });
+        }
+      });
+    }
+  });
 });
 
 module.exports = router;

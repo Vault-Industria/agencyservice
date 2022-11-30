@@ -1,40 +1,98 @@
 {
   
   "name": "chat",
+  
   "version": "1.0.0",
+  
   "description": "",
+  
   "main": "chat.js",
+  
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+  
+    
+  "start": "node index.js",
+  
+    
+  "dev": "nodemon index.js",
+  
+    
+  "test": "echo \"Error: no test specified\" && exit 1"
+  
   },
+  
   "keywords": [],
+  
   "author": "",
+  
   "license": "ISC",
+  
   "dependencies": {
-    "@stripe/stripe-js": "^1.36.0",
-    "api": "^4.5.2",
-    "axios": "^0.27.2",
-    "bcryptjs": "^2.4.3",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.1",
-    "ethers": "^5.7.2",
-    "express": "^4.18.1",
-    "jsonwebtoken": "^8.5.1",
-    "mailtrap": "^3.0.0",
-    "mongoose": "^6.4.2",
-    "node-fetch": "^3.3.0",
-    "nodemailer": "^6.7.8",
-    "qs": "^6.11.0",
-    "stripe": "^10.8.0",
-    "web3": "^1.7.4"
+  
+    
+  "@stripe/stripe-js": "^1.36.0",
+  
+    
+  "api": "^4.5.2",
+  
+    
+  "axios": "^0.27.2",
+  
+    
+  "bcryptjs": "^2.4.3",
+  
+    
+  "cors": "^2.8.5",
+  
+    
+  "dotenv": "^16.0.1",
+  
+    
+  "ethers": "^5.7.2",
+  
+    
+  "express": "^4.18.1",
+  
+    
+  "jsonwebtoken": "^8.5.1",
+  
+    
+  "mailtrap": "^3.0.0",
+  
+    
+  "mongoose": "^6.4.2",
+  
+    
+  "node-fetch": "^3.3.0",
+  
+    
+  "nodemailer": "^6.7.8",
+  
+    
+  "qs": "^6.11.0",
+  
+    
+  "stripe": "^10.8.0",
+  
+    
+  "web3": "^1.7.4"
+  
   },
+  
   "engines": {
-    "npm": ">=8.0.0 <9.0.0",
-    "node": ">=16.0.0 <17.0.0"
+  
+    
+  "npm": ">=8.0.0 <9.0.0",
+  
+    
+  "node": ">=16.0.0 <17.0.0"
+  
   },
+  
   "devDependencies": {
-    "nodemon": "^2.0.18"
+  
+    
+  "nodemon": "^2.0.20"
+  
   }
 }

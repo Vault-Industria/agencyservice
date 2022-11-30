@@ -72,8 +72,8 @@ router.post("/buyertocontract", async(req,res)=>{
           fromBlock: '0x0',
           toBlock: 'latest',
           category: ['external','erc20','erc721'],
-          toAddress:"0xB2296EdF139af8820b3AbA94AE796676c3c82a24",
-          fromAddress:"0x47973b9B9515A816f2bB0f13F2463f6adBE1A791",
+          toAddress:owner,
+          fromAddress:"0x5FbDB2315678afecb367f032d93F642f64180aa3",
           withMetadata: false,
           excludeZeroValue: true,
           maxCount: '0x3e8'
@@ -167,6 +167,18 @@ router.get("/getnfts", async (req, res) => {
       }
     });
   });
+
+  router.post("/updatesold",async(req,res) =>{
+    const {tId} = req.body;
+    minted.findOneAndUpdate({assetCId:tId},{sold:true},function(err,result){
+      if(err){
+        res.send(err);
+      }else{
+        res.send(result)
+      }
+    })
+
+  })
 
   
   router.post("/getbyowneraddress", async (req, res) => {
@@ -293,7 +305,7 @@ const options = {
         excludeZeroValue: true,
         maxCount: '0x3e8',
         fromAddress: address,
-        contractAddresses: ['0x4b60c4c241100e2ddb0e4af034174e0441a084af',]
+        contractAddresses: [`${contractAddress}`,]
       }
     ]
   }
@@ -341,7 +353,7 @@ const options = {
           excludeZeroValue: true,
           maxCount: '0x3e8',
           toAddress: address,
-          contractAddresses: ['0x4b60c4c241100e2ddb0e4af034174e0441a084af',]
+          contractAddresses: [`${contractAddress}`,]
         }
       ]
   }
